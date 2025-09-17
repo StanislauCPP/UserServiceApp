@@ -14,11 +14,16 @@ import org.slf4j.LoggerFactory;
 public class HibernateHandler {
 	private static final Logger log = LoggerFactory.getLogger(HibernateHandler.class);
 	private static SessionFactory sessionFactory;
+
 	private Session session;
 
-	static {
+	public static void createConfigAndSessionFactory(String url, String name, String pass) {
 		Configuration configuration = new Configuration();
 		configuration.configure();
+
+		configuration.setProperty("hibernate.connection.url", url);
+		configuration.setProperty("hibernate.connection.username", name);
+		configuration.setProperty("hibernate.connection.password", pass);
 
 		try { sessionFactory = configuration.buildSessionFactory(); }
 		catch (HibernateException e) { throw new RuntimeException(e); }

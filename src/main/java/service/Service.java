@@ -6,6 +6,8 @@ import repository.HibernateHandler;
 import java.time.LocalDate;
 
 public class Service {
+	static { HibernateHandler.createConfigAndSessionFactory("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin"); }
+
 	private HibernateHandler hibernateHandler = new HibernateHandler();
 
 	public void createUser(String name, String email, int age) {
