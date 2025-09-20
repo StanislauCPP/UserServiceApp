@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "users", schema = "public")
 public class User{

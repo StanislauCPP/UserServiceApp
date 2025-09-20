@@ -1,5 +1,7 @@
 package service;
 
+import dto.UserDto;
+import dto.mapper.UserMapper;
 import entity.User;
 import repository.HibernateHandler;
 
@@ -10,38 +12,45 @@ public class Service {
 
 	private HibernateHandler hibernateHandler = new HibernateHandler();
 
-	public void createUser(String name, String email, int age) {
-		User user = new User();
-		user.setName(name);
-		user.setEmail(email);
-		user.setAge(age);
-		user.setCreatedAt(LocalDate.now());
+	public UserDto createUser(UserDto userDto) {
+		User user = UserMapper.toEntity(userDto);
 
-		hibernateHandler.create(user);
+		user = (User) hibernateHandler.create(user);
+
+		return UserMapper.toDto(user);
 	}
 
-	public Object searchUserById(int id) {
-		return hibernateHandler.readById(id);
+	public UserDto searchUserById(int id) {
+		User user = (User) hibernateHandler.readById(id);
+		return UserMapper.toDto(user);
 	}
 
-	public void updateUser(int id, String name, String email, int age) {
-		User user = (User) searchUserById(id);
+	public UserDto updateUser(int id, UserDto userDto) {
+		UserDto updateResult = null;
+		User user = (User) hibernateHandler.readById(id);
 		if (user == null)
 			System.out.println("Record wasn't found");
 		else {
-			user.setName(name);
-			user.setEmail(email);
-			user.setAge(age);
-			hibernateHandler.update(user);
+			user = UserMapper.toEntity(userDto);
+			user.setId(id);
+			user = (User) hibernateHandler.update(user);
+
+			updateResult = UserMapper.toDto(user);
 		}
+
+		return updateResult;
 	}
 
-	public void deleteUser(int id) {
-		User user = (User) searchUserById(id);
-		if (user == null)
+	public boolean deleteUser(int id) {
+		User user = (User) hibernateHandler.readById(id);
+		if (user == null) {
 			System.out.println("Record wasn't found");
+			return false;
+		}
 		else
 			hibernateHandler.delete(user);
+
+		return true;
 	}
 
 	public void close() {	hibernateHandler.close();	}

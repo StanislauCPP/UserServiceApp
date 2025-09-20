@@ -29,14 +29,16 @@ public class HibernateHandler {
 		catch (HibernateException e) { throw new RuntimeException(e); }
 	}
 
-	public void create(User user) {
+	public Object create(User user) {
 		try {
 			session = sessionFactory.openSession();
 			session.beginTransaction();
 
-			session.persist(user);
+			session.persist(user);																										// entity (user) id is assigned in this operation
 
 			session.getTransaction().commit();
+
+			return readById(user.getId());
 		}
 		catch (Exception e)	{
 			session.getTransaction().rollback();
@@ -65,7 +67,7 @@ public class HibernateHandler {
 		return entity;
 	}
 
-	public void update(User user) {
+	public Object update(User user) {
 		try {
 			session = sessionFactory.openSession();
 			session.beginTransaction();
@@ -73,6 +75,8 @@ public class HibernateHandler {
 			session.merge(user);
 
 			session.getTransaction().commit();
+
+			return readById(user.getId());
 		}
 		catch (Exception e)	{
 			session.getTransaction().rollback();
