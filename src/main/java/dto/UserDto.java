@@ -1,14 +1,12 @@
 package dto;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @RequiredArgsConstructor
+@EqualsAndHashCode
 @ToString
 public class UserDto {
 	@NonNull
