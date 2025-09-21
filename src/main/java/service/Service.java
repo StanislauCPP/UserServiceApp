@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class Service {
 	static { HibernateHandler.createConfigAndSessionFactory("jdbc:postgresql://localhost:5432/postgres", "postgres", "admin"); }
 
-	private HibernateHandler hibernateHandler = new HibernateHandler();
+	private HibernateHandler hibernateHandler = new HibernateHandler(User.class);
 
 	public UserDto createUser(UserDto userDto) {
 		User user = UserMapper.toEntity(userDto);

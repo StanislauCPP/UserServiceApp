@@ -1,7 +1,8 @@
 package repository;
 
 import entity.User;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -10,10 +11,13 @@ import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@NoArgsConstructor
-public class HibernateHandler {
+@RequiredArgsConstructor
+public class HibernateHandler <T> {
 	private static final Logger log = LoggerFactory.getLogger(HibernateHandler.class);
 	private static SessionFactory sessionFactory;
+
+	@NonNull
+	private Class<T> entityClass;
 
 	private Session session;
 
@@ -55,7 +59,7 @@ public class HibernateHandler {
 			session = sessionFactory.openSession();
 			session.beginTransaction();
 
-			entity = session.get(User.class, id);
+			entity = session.get(entityClass, id);
 		}
 		catch (Exception e)	{
 			close();
