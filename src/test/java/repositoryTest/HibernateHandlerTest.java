@@ -23,22 +23,19 @@ public class HibernateHandlerTest {
 																			.withSecurityOpts(Collections.singletonList("seccomp=unconfined")))
 			.withInitScript("database.sql");
 
+	static HibernateHandler hibernateHandler = new HibernateHandler(User.class);;
+
 	@BeforeAll
-	static void beforeAll() {	postgres.start();	}
-
-	HibernateHandler hibernateHandler;
-
-	@BeforeEach
-	void beforeEach() {
+	static void beforeAll() {
+		postgres.start();
 		HibernateHandler.createConfigAndSessionFactory(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
-		hibernateHandler = new HibernateHandler(User.class);
 	}
 
-	@AfterEach
-	void afterEach() { hibernateHandler.close(); }
-
 	@AfterAll
-	static void afterAll() { postgres.stop(); }
+	static void afterAll() {
+		postgres.stop();
+		hibernateHandler.close();
+	}
 
 	static User readJDBC(int id) {
 		try (Connection connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
@@ -86,7 +83,9 @@ public class HibernateHandlerTest {
 		expected.setEmail("email@em.ru");
 		expected.setAge(100);
 		expected.setCreatedAt(LocalDate.now());
-		Throwable exception = assertThrows(PersistenceException.class, () -> hibernateHandler.create(expected));
+		Throwable exception = assertThrows(RuntimeException.class, () -> hibernateHandler.create(expected));
+
+		assertEquals("jakarta.persistence.PersistenceException: Converting `org.hibernate.PropertyValueException` to JPA `PersistenceException` : not-null property references a null or transient value : entity.User.name", exception.getMessage());
 	}
 
 	@Test

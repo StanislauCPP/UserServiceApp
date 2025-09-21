@@ -16,6 +16,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 public class ServiceTest {
 	@InjectMocks
 	private Service service;
@@ -41,9 +42,8 @@ public class ServiceTest {
 		expected = new UserDto(name, email, age, localDate);
 	}
 
-	@ExtendWith(MockitoExtension.class)
 	@Test
-	public void createUser() {
+	public void userDtoInput_createUserOperation_expectedUserDto() {
 		Mockito.when(hibernateHandler.create(user)).thenReturn(user);
 
 		UserDto actual = service.createUser(expected);
@@ -51,9 +51,8 @@ public class ServiceTest {
 		assertEquals(expected, actual);
 	}
 
-	@ExtendWith(MockitoExtension.class)
 	@Test
-	public void searchUserById() {
+	public void userId_searchUserByIdOperation_expectedUserDto() {
 		int id = 5;
 
 		Mockito.when(hibernateHandler.readById(id)).thenReturn(user);
@@ -63,9 +62,8 @@ public class ServiceTest {
 		assertEquals(expected, actual);
 	}
 
-	@ExtendWith(MockitoExtension.class)
 	@Test
-	public void updateUser() {
+	public void userIdUpdatedParametersUserDtoInput_updateUserOperation_expectedUpdatedUserDto() {
 		int id = 5;
 
 		user.setId(id);
@@ -77,9 +75,8 @@ public class ServiceTest {
 		assertEquals(expected, actual);
 	}
 
-	@ExtendWith(MockitoExtension.class)
 	@Test
-	public void updateNotExistedUser() {
+	public void notExistedUpdatedParametersUserDtoInput_updateNotExistedUser_expectedNull() {
 		int id = 5;
 
 		user.setId(id);
@@ -90,9 +87,8 @@ public class ServiceTest {
 		assertNull(actual);
 	}
 
-	@ExtendWith(MockitoExtension.class)
 	@Test
-	public void delete(){
+	public void userId_deleteOperation_expectedResultOperation(){
 		int id = 5;
 
 		user.setId(id);
@@ -103,9 +99,8 @@ public class ServiceTest {
 		assertTrue(actual);
 	}
 
-	@ExtendWith(MockitoExtension.class)
 	@Test
-	public void deleteNotExistedUser(){
+	public void notExistedUserId_deleteOperation_expectedResultOperation(){
 		int id = 5;
 
 		user.setId(id);
