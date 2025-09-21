@@ -48,7 +48,7 @@ public class HibernateHandler <T> {
 			session.getTransaction().rollback();
 			close();
 			log.error("Transaction failed\n {}", e.getMessage());
-			throw new RuntimeException("Creating record in database failed\n");
+			throw new RuntimeException(e);
 		}
 		finally {	session.close(); }
 	}
@@ -64,7 +64,7 @@ public class HibernateHandler <T> {
 		catch (Exception e)	{
 			close();
 			log.error("Transaction failed\n {}", e.getMessage());
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 		finally {	session.close(); }
 
@@ -86,7 +86,7 @@ public class HibernateHandler <T> {
 			session.getTransaction().rollback();
 			close();
 			log.error("Transaction failed\n {}", e.getMessage());
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 		finally {	session.close(); }
 	}
@@ -104,7 +104,7 @@ public class HibernateHandler <T> {
 			session.getTransaction().rollback();
 			close();
 			log.error("Transaction failed\n {}", e.getMessage());
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 		finally {	session.close(); }
 	}
