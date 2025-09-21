@@ -1,7 +1,8 @@
 package repository;
 
 import entity.User;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -10,10 +11,13 @@ import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@NoArgsConstructor
-public class HibernateHandler {
+@RequiredArgsConstructor
+public class HibernateHandler <T> {
 	private static final Logger log = LoggerFactory.getLogger(HibernateHandler.class);
 	private static SessionFactory sessionFactory;
+
+	@NonNull
+	private Class<T> entityClass;
 
 	private Session session;
 
@@ -44,7 +48,7 @@ public class HibernateHandler {
 			session.getTransaction().rollback();
 			close();
 			log.error("Transaction failed\n {}", e.getMessage());
-			throw new RuntimeException("Creating record in database failed\n");
+			throw new RuntimeException(e);
 		}
 		finally {	session.close(); }
 	}
@@ -55,12 +59,12 @@ public class HibernateHandler {
 			session = sessionFactory.openSession();
 			session.beginTransaction();
 
-			entity = session.get(User.class, id);
+			entity = session.get(entityClass, id);
 		}
 		catch (Exception e)	{
 			close();
 			log.error("Transaction failed\n {}", e.getMessage());
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 		finally {	session.close(); }
 
@@ -82,7 +86,7 @@ public class HibernateHandler {
 			session.getTransaction().rollback();
 			close();
 			log.error("Transaction failed\n {}", e.getMessage());
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 		finally {	session.close(); }
 	}
@@ -100,7 +104,7 @@ public class HibernateHandler {
 			session.getTransaction().rollback();
 			close();
 			log.error("Transaction failed\n {}", e.getMessage());
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 		finally {	session.close(); }
 	}
