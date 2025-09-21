@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import entity.User;
+import jakarta.persistence.PersistenceException;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import repository.HibernateHandler;
@@ -30,7 +31,7 @@ public class HibernateHandlerTest {
 	@BeforeEach
 	void beforeEach() {
 		HibernateHandler.createConfigAndSessionFactory(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword());
-		hibernateHandler = new HibernateHandler();
+		hibernateHandler = new HibernateHandler(User.class);
 	}
 
 	@AfterEach
@@ -67,7 +68,7 @@ public class HibernateHandlerTest {
 	}
 
 	@Test
-	public void create() {
+	public void userInput_createOperation_expectedCreatedUser() {
 		User expected = new User();
 		expected.setName("name");
 		expected.setEmail("email@em.ru");
@@ -79,17 +80,17 @@ public class HibernateHandlerTest {
 	}
 
 	@Test
-	public void createOperationThrowException() {
+	public void userWithNullParameterInput_createOperation_ThrowException() {
 		User expected = new User();
 		expected.setName(null);
 		expected.setEmail("email@em.ru");
 		expected.setAge(100);
 		expected.setCreatedAt(LocalDate.now());
-		Throwable exception = assertThrows(RuntimeException.class, () -> hibernateHandler.create(expected));
+		Throwable exception = assertThrows(PersistenceException.class, () -> hibernateHandler.create(expected));
 	}
 
 	@Test
-	public void read_existed() {
+	public void existedUserIdInput_readOperation_expectedExistedUser() {
 		int id = 1;
 		User expected = readJDBC(id);
 
@@ -99,7 +100,7 @@ public class HibernateHandlerTest {
 	}
 
 	@Test
-	public void read_NotExisted()	{
+	public void notExistedUserIdInput_readOperation_expectedNull()	{
 		int id = 100;
 		User expected = readJDBC(id);
 
@@ -109,7 +110,7 @@ public class HibernateHandlerTest {
 	}
 
 	@Test
-	public void update() {
+	public void existedUserIdUpdatedUserParametersInput_updateOperation_expectedUpdatedUser() {
 		int id = 2;
 
 		User expected = readJDBC(id);
@@ -123,7 +124,7 @@ public class HibernateHandlerTest {
 	}
 
 	@Test
-	public void delete() {
+	public void existedUserIdInput_deleteOperation_expectedNull() {
 		int id = 1;
 		User expected = readJDBC(id);
 		if(expected == null)
