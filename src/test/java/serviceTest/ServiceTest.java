@@ -47,6 +47,7 @@ public class ServiceTest {
 		Mockito.when(hibernateHandler.create(user)).thenReturn(user);
 
 		UserDto actual = service.createUser(expected);
+		Mockito.verify(hibernateHandler).create(user);
 
 		assertEquals(expected, actual);
 	}
@@ -58,6 +59,7 @@ public class ServiceTest {
 		Mockito.when(hibernateHandler.readById(id)).thenReturn(user);
 
 		UserDto actual = service.searchUserById(id);
+		Mockito.verify(hibernateHandler).readById(id);
 
 		assertEquals(expected, actual);
 	}
@@ -71,6 +73,8 @@ public class ServiceTest {
 		Mockito.when(hibernateHandler.update(user)).thenReturn(user);
 
 		UserDto actual = service.updateUser(id, expected);
+		Mockito.verify(hibernateHandler).readById(id);
+		Mockito.verify(hibernateHandler).update(user);
 
 		assertEquals(expected, actual);
 	}
@@ -83,6 +87,7 @@ public class ServiceTest {
 		Mockito.when(hibernateHandler.readById(id)).thenReturn(null);
 
 		UserDto actual = service.updateUser(id, expected);
+		Mockito.verify(hibernateHandler).readById(id);
 
 		assertNull(actual);
 	}
@@ -95,6 +100,8 @@ public class ServiceTest {
 		Mockito.when(hibernateHandler.readById(id)).thenReturn(user);
 
 		boolean actual = service.deleteUser(id);
+		Mockito.verify(hibernateHandler).readById(id);
+		Mockito.verify(hibernateHandler).delete(user);
 
 		assertTrue(actual);
 	}
@@ -107,6 +114,7 @@ public class ServiceTest {
 		Mockito.when(hibernateHandler.readById(id)).thenReturn(null);
 
 		boolean actual = service.deleteUser(id);
+		Mockito.verify(hibernateHandler).readById(id);
 
 		assertFalse(actual);
 	}
